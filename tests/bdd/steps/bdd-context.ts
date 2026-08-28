@@ -1,0 +1,120 @@
+/** Shared Cucumber context for SDK BDD step definitions. */
+
+import type { PortoClient } from "../../../src/client.js";
+import type { PortoMark } from "../../../src/execution/index.js";
+import type { Porto } from "../../../src/services/porto-resolver.js";
+import type { ProductOption } from "../../../src/services/product-option-types.js";
+import type { Address } from "../../../src/types/index.js";
+
+export interface BddContext {
+    client?: PortoClient;
+    providerId?: string;
+    destinationCountry?: string;
+    destinationRegion?: string;
+    letterWeight?: number;
+    candidateProductIds?: string[];
+    deliveryPreference?: "fastest" | "cheapest" | "economy";
+    productId?: string;
+    zoneId?: string;
+    serviceId?: string;
+    requestedService?: string;
+    serviceKind?: string;
+    servicesKinds?: string[];
+    serviceIds?: string[];
+    restrictionLookup?: {
+        impact?: "block" | "warn" | null;
+        legal?: Array<{
+            impact: "block" | "warn";
+            countryCode: string;
+            regionCode?: string;
+            partial: boolean;
+            jurisdictions?: Array<{
+                jurisdiction: string;
+                reference: string | null;
+                effectiveFrom?: string | null;
+                effectiveTo?: string | null;
+            }>;
+            [key: string]: unknown;
+        }>;
+        routing?: Array<{
+            impact: "warn";
+            countryCode: string;
+            regionCode?: string;
+            partial: boolean;
+            authority?: string;
+            [key: string]: unknown;
+        }>;
+        [key: string]: unknown;
+    };
+    porto?: {
+        product?: { id: string };
+        zone?: { id: string };
+        amount?: number;
+        currency?: string;
+        isRestricted?: boolean;
+        [key: string]: unknown;
+    };
+    resolvedPorto?: Porto;
+    resolvedPortos?: Porto[];
+    coverage?: string;
+    sender?: Address | null;
+    recipient?: Address | null;
+    mark?: PortoMark;
+    marks?: PortoMark[];
+    resolutionError?: { code: string; message: string; details?: unknown };
+    envelopeId?: string;
+    productOptions?: ProductOption[];
+    zone?: { id: string; country_codes?: string[]; [key: string]: unknown };
+    weight?: number;
+    pricing?: { amount?: number; currency?: string; [key: string]: unknown };
+    price?: number;
+    quotedAmount?: number;
+    storedPrice?: number;
+    storedPricing?: unknown;
+    result?: Record<string, unknown>;
+    restrictionResult?: { restriction: Record<string, unknown> };
+    sanctionsResult?: { restriction: Record<string, unknown> };
+    screeningInfo?: Record<string, unknown>;
+    originAddress?: Record<string, unknown>;
+    destinationAddress?: Record<string, unknown>;
+    letterLength?: number;
+    letterWidth?: number;
+    letterHeight?: number;
+    address?: Record<string, string>;
+    validationResult?: { isValid: boolean; errors?: string[]; warnings?: string[] };
+    validationErrors?: string[];
+    validationWarnings?: string[];
+    resolvedProductId?: string | null;
+    services?: Record<string, unknown>[];
+    features?: unknown[];
+    order?: { services: string[]; [key: string]: unknown };
+    totalPrice?: number;
+    serviceFee?: number;
+    compatibilityErrors?: string[];
+    serviceCompatible?: boolean;
+    products?: Record<string, unknown>[];
+    zones?: Record<string, unknown>[];
+    productPrices?: Record<string, unknown>[];
+    priceEntries?: Record<string, unknown>[];
+    nestedPrices?: Record<string, unknown>[];
+    restrictionsData?: Record<string, unknown>;
+    restrictionEntries?: Record<string, unknown>[];
+    envelopes?: Record<string, unknown>[];
+    weightTiers?: Record<string, Record<string, unknown>>;
+    weightTierEntries?: Record<string, unknown>[];
+    providersData?: Record<string, unknown>;
+    countryCode3?: string;
+    executionData?: Record<string, unknown>;
+    preCalculatedPrice?: number;
+    dataPath?: string;
+    cliResult?: Record<string, unknown>;
+    previousCliResult?: Record<string, unknown>;
+    letterData?: Record<string, unknown>;
+    addressData?: Record<string, unknown>;
+    markError?: { code: string; message: string };
+    authTriggerDetail?: string;
+    markExecutionTriggerDetail?: string;
+    invalidMarkDestination?: boolean;
+}
+
+export const bddContext: BddContext = {};

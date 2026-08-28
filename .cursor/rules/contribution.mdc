@@ -1,0 +1,27 @@
+---
+description: Porto SDK TypeScript — contributor workflow
+alwaysApply: true
+---
+
+# Porto SDK TypeScript — contribution
+
+Node ≥20, TypeScript ~5.9. Runtime/build: **porto-data**. Dev/BDD: **porto-features**. Browser entry: package `/browser` subpath (embedded catalog).
+
+1. Read [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
+2. Do not swap `execution.json` (billing/execution gates) with `graph.edges.wire` (checkout codes).
+3. Cross-SDK behavior: coordinate with Python; note parity in the PR.
+
+Architecture: [sdk.mdc](sdk.mdc).
+
+```bash
+make          # pnpm install + hooks
+make check    # registry + bindings + biome + tsc + unit tests
+make sdk      # porto-features @sdk batches
+make validate # check + sdk + adapters
+```
+
+Heavy: `I_ACCEPT_PAID_API_COST=1 make heavy` / `test-api` only with credentials.
+
+Do not commit: `src/_bundled/`, `artifacts/`, `coverage/`, `node_modules/`.
+
+BDD: `tests/bdd/runner/batches.ts` · `scripts/test/run_bdd_batches.ts` · `tests/bdd/steps/`.

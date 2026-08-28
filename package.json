@@ -1,0 +1,86 @@
+{
+    "name": "@gruncellka/porto-sdk",
+    "version": "0.1.0",
+    "description": "TypeScript SDK for multi-provider postage — products, pricing, restrictions, envelopes, marks, and tracking",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./browser": {
+            "import": "./dist/browser.js",
+            "types": "./dist/browser.d.ts",
+            "default": "./dist/browser.js"
+        }
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "packageManager": "pnpm@9.15.0",
+    "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+    "bin": {
+        "porto": "./dist/cli.js"
+    },
+    "scripts": {
+        "build": "tsup && node scripts/build/build-browser.mjs",
+        "build:check": "tsc --noEmit",
+        "types": "tsc --noEmit",
+        "sync:bindings": "node scripts/build/build_error_bindings.mjs",
+        "check:bindings": "node scripts/build/build_error_bindings.mjs --check",
+        "check": "pnpm run check:bindings && tsc --noEmit && vitest run",
+        "registry": "python3 scripts/check_registry.py",
+        "cli": "node dist/cli.js",
+        "test": "vitest",
+        "test:unit": "vitest run",
+        "test:bdd": "NODE_OPTIONS='--import tsx' tsx scripts/test/run_bdd_batches.ts",
+        "test:bdd-list": "NODE_OPTIONS='--import tsx' tsx scripts/test/run_bdd_batches.ts --list",
+        "lint": "biome check --diagnostic-level=error --max-diagnostics=none src scripts tests",
+        "format": "biome format --write src scripts tests"
+    },
+    "keywords": [
+        "deutsche-post",
+        "ukrposhta",
+        "la-poste",
+        "swiss-post",
+        "internetmarke",
+        "postage",
+        "letter",
+        "stamp",
+        "pricing",
+        "tracking",
+        "envelope",
+        "restrictions",
+        "multi-provider",
+        "sdk",
+        "porto"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gruncellka/porto-sdk-typescript"
+    },
+    "homepage": "https://github.com/gruncellka/porto-sdk-typescript",
+    "author": "Oleksandr Tsyba",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@gruncellka/porto-data": ">=0.7.0 <1.0.0",
+        "ajv": "^8.18.0",
+        "commander": "^11.1.0",
+        "zod": "^3.25.76"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@cucumber/cucumber": "^10.9.0",
+        "@gruncellka/porto-features": ">=0.5.0 <1.0.0",
+        "@types/node": "^20.19.37",
+        "@vitest/coverage-v8": "^1.6.1",
+        "expect": "^30.3.0",
+        "tsup": "^8.5.1",
+        "tsx": "^4.21.0",
+        "typescript": "~5.9.3",
+        "vitest": "^1.6.1"
+    }
+}

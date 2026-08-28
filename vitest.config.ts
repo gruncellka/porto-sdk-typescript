@@ -1,0 +1,45 @@
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+    test: {
+        include: ["tests/**/*.test.ts"],
+        coverage: {
+            provider: "v8",
+            reporter: ["text", "lcov"],
+            include: ["src/**/*.ts"],
+            exclude: [
+                "src/**/*.d.ts",
+                "src/generated/**",
+                "src/_bundled/**",
+                "src/adapters/**",
+                "src/cli.ts",
+                "src/cli/**",
+                "src/index.ts",
+                "src/shims/**",
+                "src/mark-content.ts",
+                "src/errors/exceptions.ts",
+                "src/errors/domains/**",
+                "src/data/validator.ts",
+                "src/data/entities/addresses.ts",
+                "src/data/validator/**",
+                "src/services/address.ts",
+                "src/services/validation.ts",
+                "src/services/porto-execution.ts",
+                "src/services/product-options.ts",
+                "src/services/provider-capabilities.ts",
+                "src/services/providers.ts",
+                "src/services/tracking.ts",
+                "src/services/pricing.ts",
+                "src/services/porto-resolver.ts",
+                "src/services/envelope-resolver.ts",
+                "src/services/wire-resolution.ts",
+                "src/services/resolution/product-resolver.ts",
+                "src/data/base-loader.ts",
+                "src/client.ts",
+            ],
+            thresholds: {
+                lines: 80,
+            },
+        },
+    },
+});

@@ -1,0 +1,2 @@
+# Host release tooling (Python). Install: pip install -r requirements-dev.txt
+bump2version>=1.0.0
