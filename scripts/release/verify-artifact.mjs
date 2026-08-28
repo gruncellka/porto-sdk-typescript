@@ -66,11 +66,11 @@ function checkContract(names) {
 }
 
 function ensureTarball() {
-    const existing = readdirSync(ROOT)
-        .filter((f) => f.startsWith("gruncellka-porto-sdk-") && f.endsWith(".tgz"))
-        .sort();
-    if (existing.length) {
-        return join(ROOT, existing[existing.length - 1]);
+    // Always pack from the current tree so verify and publish share one artifact build path.
+    for (const f of readdirSync(ROOT).filter(
+        (name) => name.startsWith("gruncellka-porto-sdk-") && name.endsWith(".tgz"),
+    )) {
+        rmSync(join(ROOT, f), { force: true });
     }
     run("pnpm", ["pack"]);
     const packed = readdirSync(ROOT)
@@ -93,9 +93,11 @@ function smokeInstall(tarball) {
     writeFileSync(
         join(smoke, "consumer.ts"),
         `import { PortoClient, type PortoConfig } from "@gruncellka/porto-sdk";
+import { PortoClient as BrowserClient } from "@gruncellka/porto-sdk/browser";
 const cfg: PortoConfig = {};
 void cfg;
 void PortoClient;
+void BrowserClient;
 console.log("public import OK");
 `,
     );
@@ -123,6 +125,17 @@ console.log("public import OK");
         ],
         { cwd: smoke },
     );
+    run(
+        "node",
+        [
+            "--input-type=module",
+            "-e",
+            "import '@gruncellka/porto-sdk/browser'; console.log('browser export OK');",
+        ],
+        { cwd: smoke },
+    );
+    const portoBin = join(smoke, "node_modules", ".bin", "porto");
+    run(portoBin, ["--help"], { cwd: smoke });
     rmSync(smoke, { recursive: true, force: true });
 }
 

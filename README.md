@@ -1,5 +1,8 @@
 # Porto SDK
 
+[![validation](https://github.com/gruncellka/porto-sdk-typescript/actions/workflows/validation.yml/badge.svg)](https://github.com/gruncellka/porto-sdk-typescript/actions/workflows/validation.yml)
+[![codecov](https://codecov.io/gh/gruncellka/porto-sdk-typescript/branch/main/graph/badge.svg)](https://codecov.io/gh/gruncellka/porto-sdk-typescript)
+
 Cross-provider postal SDK for TypeScript.
 
 Supported providers: Deutsche Post, Ukrposhta, La Poste, and Swiss Post.
