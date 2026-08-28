@@ -6,6 +6,9 @@ export const ARTIFACT_CONTRACT = {
         "package/package.json",
         "package/dist/index.js",
         "package/dist/index.d.ts",
+        "package/dist/browser.js",
+        "package/dist/browser.d.ts",
+        "package/dist/cli.js",
         "package/LICENSE",
         "package/README.md",
         "package/CHANGELOG.md",
@@ -21,7 +24,7 @@ export const ARTIFACT_CONTRACT = {
         "package/README.md",
         "package/CHANGELOG.md",
     ],
-    /** Universal top-level junk under package/ — not environment-specific. */
+    /** Universal junk segments under package/ — defense in depth. */
     forbiddenSegments: [
         "node_modules",
         "tests",
@@ -32,5 +35,6 @@ export const ARTIFACT_CONTRACT = {
         "docs",
         "artifacts",
         ".env",
+        "labs",
     ],
 };
