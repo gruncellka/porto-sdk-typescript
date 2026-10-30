@@ -26,6 +26,27 @@ describe("layout join", () => {
             size: { width: 37, height: 20 },
             placement: { x: 155, y: 0, width: 74, height: 40 },
         });
+        expect(layout.mark).not.toHaveProperty("clearance");
+    });
+
+    it("DL DE mark zone is the published Frankierzone with no clearance invent", () => {
+        const layout = client("deutschepost").envelopes.layout("DL", "DE", "standardbrief", {
+            zoneId: "domestic",
+        }) as { width: number; height: number; mark: Record<string, unknown> };
+        expect(layout.width).toBe(220);
+        expect(layout.height).toBe(110);
+        expect(layout.mark).toMatchObject({
+            type: "stamp",
+            size: { width: 37, height: 20 },
+            placement: { x: 146, y: 0, width: 74, height: 40 },
+        });
+        expect(layout.mark).not.toHaveProperty("clearance");
+        const mark = client("deutschepost").envelopes.getMark("standardbrief", {
+            envelopeId: "DL",
+            zoneId: "domestic",
+        }) as Record<string, unknown>;
+        expect(mark.placement).toEqual({ x: 146, y: 0, width: 74, height: 40 });
+        expect(mark).not.toHaveProperty("clearance");
     });
 
     it("getMark returns type, size, and placement facts", () => {
