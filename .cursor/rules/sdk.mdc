@@ -26,7 +26,15 @@ Do not invent catalog fields in SDK loaders — copy JSON only.
 
 - Coordinate resolver, adapter, browser entry, BDD step, and batch id changes with Python.
 - `tests/bdd/runner/batches.ts` ids must match Python `batches.py`.
+- Keep `PortoStatus`, tracking event fields, absence, ordering, and event identity semantically equal after camel/snake case folding.
 - Note parity in the PR; run `make validate` before push.
+
+## Tracking
+
+- Provider adapters own native codes, timestamp fields, and event chronology. Unknown codes remain unmapped.
+- `occurredAt` preserves carrier time: explicit offsets stay explicit and zoneless local values stay zoneless. Never infer a timezone, parse local values through `Date`, or substitute poll time.
+- `lastUpdate` is the latest carrier event time; `statusChangedAt` starts the current normalized status run.
+- `TrackingState` and `trackStamp` are deprecated compatibility aliases; do not add new uses.
 
 ## Do not build (unless asked)
 
