@@ -250,6 +250,35 @@ async function runBatch(
     },
 ): Promise<BatchResult> {
     mkdirSync(options.runDir, { recursive: true });
+    const featurePath = featurePathForBatch(options.featuresRoot, batch);
+    if (!existsSync(featurePath)) {
+        const reportPath = join(options.runDir, `${batch.id}.json`);
+        const result: BatchResult = {
+            batchId: batch.id,
+            label: batch.label,
+            passed: 0,
+            failed: 0,
+            skipped: 1,
+            errors: 0,
+            durationS: 0,
+            exitCode: 0,
+            failedTests: [],
+            scenarios: [
+                {
+                    name: `missing ${batch.featureGlob}`,
+                    status: "skipped",
+                    message: `Feature not in installed porto-features yet: ${featurePath}`,
+                },
+            ],
+            reportPath,
+            interrupted: false,
+            inScope: 0,
+            deselected: 0,
+        };
+        writeFileSync(reportPath, `${JSON.stringify([{ elements: [] }], null, 2)}\n`);
+        options.reporter.printBatchScenarios(result);
+        return result;
+    }
     const scope = batchScopeCounts(batch, options.featuresRoot);
     const scenarioNames = scope.selected;
     const started = performance.now();
