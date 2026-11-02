@@ -54,6 +54,23 @@ describe("ProviderClient config", () => {
         expect(PortoErrorCode.PORTO_TRACKING_NOT_FOUND).toBe("PORTO_TRACKING_NOT_FOUND");
         expect(PortoErrorCode.PORTO_PROVIDER_NOT_CONFIGURED).toBe("PORTO_PROVIDER_NOT_CONFIGURED");
     });
+
+    it("wires shipment baseUrl into Deutsche Post tracking", () => {
+        const without = new PortoClient().provider("deutschepost").capabilities();
+        expect(without.track).toBe("unsupported");
+
+        const withShipment = new PortoClient({
+            providers: {
+                deutschepost: {
+                    wires: { shipment: { baseUrl: "https://track.example" } },
+                },
+            },
+        })
+            .provider("deutschepost")
+            .capabilities();
+        expect(withShipment.track).toBe("ready");
+        expect(withShipment.trackingKind).toBe("shipment");
+    });
 });
 
 describe("tracking ACL", () => {
