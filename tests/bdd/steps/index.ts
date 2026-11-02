@@ -8,6 +8,7 @@ import "./pricing.steps.js";
 import "./restrictions.steps.js";
 import "./validation.steps.js";
 import "./errors.steps.js";
+import "./status.steps.js";
 import "./marks.steps.js";
 import "./services.steps.js";
 import "./data.steps.js";

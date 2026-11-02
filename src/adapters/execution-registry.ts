@@ -10,7 +10,10 @@ import { normalizePortoConfig, wiresFor } from "../config.js";
 import { findPortoDataPath } from "../data/porto-data-registry.js";
 import { createInternetmarkeAdapter } from "./deutschepost/internetmarke/bootstrap.js";
 import type { ExecutionAdapter } from "./protocols/execution.js";
-import { getTrackingAdapter as resolveTrackingAdapter } from "./tracking/adapter.js";
+import {
+    getTrackingAdapter as resolveTrackingAdapter,
+    trackingWireId,
+} from "./tracking/adapter.js";
 import { UnavailableExecutionAdapter } from "./unavailable-adapter.js";
 
 type WireEntry = {
@@ -231,8 +234,9 @@ export function getTrackingAdapter(
     wires: Record<string, WireConfig> | undefined,
     _env?: NodeJS.ProcessEnv,
     dataPath?: string | null,
+    httpClient?: import("../transport/http-client.js").Transport,
 ) {
-    const wireId =
-        resolveActiveWireFor(providerId, wires, dataPath) ?? getDefaultWireId(providerId, dataPath);
-    return resolveTrackingAdapter(providerId, { wireId, dataPath });
+    const wireId = trackingWireId(wires);
+    const baseUrl = wireId ? wires?.[wireId]?.baseUrl : undefined;
+    return resolveTrackingAdapter(providerId, { wireId, dataPath, baseUrl, httpClient });
 }

@@ -8,10 +8,12 @@ import type { PortoProduct } from "../../../data/loader.js";
 import { PortoError, PortoErrorCode } from "../../../errors.js";
 import type { ExecutionParameters, MarkExecution, PortoMark } from "../../../execution/index.js";
 import { createBoundMarkFactory, validateOutputMime } from "../../../execution/index.js";
+import { sanitizeProviderPayload } from "../../../provider-payload.js";
 import type { MarkRequest, TrackingStatus } from "../../../types/index.js";
 import type { Balance, ExecutionAdapter } from "../../protocols/execution.js";
+import { getTrackingAdapter } from "../../tracking/adapter.js";
 import { InternetmarkeAuthImpl } from "./auth.js";
-import { InternetmarkeCheckout, checkoutTrace } from "./checkout.js";
+import { type CheckoutResult, InternetmarkeCheckout, checkoutTrace } from "./checkout.js";
 import { normalizeDocumentPayload } from "./document-payload.js";
 import { requireMarkManyPrepared } from "./mark-many-policy.js";
 import { PositionFactory, type PositionMark } from "./positions.js";
@@ -149,24 +151,14 @@ export class InternetmarkeAdapter implements ExecutionAdapter {
                 total: request.value,
                 execution: opts,
             });
-            return this.newMark({
-                content: result.link,
-                contentType: "application/pdf",
-                amount: request.value,
-                externalId: result.shopOrderId,
-            });
+            return this.marksFromCheckout(result, "application/pdf", [request.value])[0]!;
         }
         const result = await checkout.png({
             positions: [this.positions.png(line)],
             total: request.value,
             execution: opts,
         });
-        return this.newMark({
-            content: result.link,
-            contentType: "image/png",
-            amount: request.value,
-            externalId: result.shopOrderId,
-        });
+        return this.marksFromCheckout(result, "image/png", [request.value])[0]!;
     }
 
     async markMany(
@@ -216,14 +208,7 @@ export class InternetmarkeAdapter implements ExecutionAdapter {
                 execution: opts,
             });
             this.lastManyTrace = checkoutTrace(result);
-            return values.map((value) =>
-                this.newMark({
-                    content: result.link,
-                    contentType: "application/pdf",
-                    amount: value,
-                    externalId: result.shopOrderId,
-                }),
-            );
+            return this.marksFromCheckout(result, "application/pdf", values);
         }
         const result = await checkout.png({
             positions: lines.map((line) => this.positions.png(line)),
@@ -231,14 +216,7 @@ export class InternetmarkeAdapter implements ExecutionAdapter {
             execution: opts,
         });
         this.lastManyTrace = checkoutTrace(result);
-        return values.map((value) =>
-            this.newMark({
-                content: result.link,
-                contentType: "image/png",
-                amount: value,
-                externalId: result.shopOrderId,
-            }),
-        );
+        return this.marksFromCheckout(result, "image/png", values);
     }
 
     private bindExecution(
@@ -261,21 +239,43 @@ export class InternetmarkeAdapter implements ExecutionAdapter {
         return new InternetmarkeCheckout(this.authFor(execution), this.baseUrl, this.httpClient);
     }
 
+    private marksFromCheckout(
+        result: CheckoutResult,
+        contentType: "application/pdf" | "image/png",
+        amounts: number[],
+    ): PortoMark[] {
+        const sanitized = sanitizeProviderPayload(result.response);
+        const rawCart =
+            sanitized !== null && typeof sanitized === "object" && !Array.isArray(sanitized)
+                ? (sanitized as Record<string, unknown>)
+                : {};
+        const vouchers = Array.isArray(result.response.voucherList)
+            ? result.response.voucherList
+            : [];
+        return amounts.map((amount, index) => {
+            const voucher = vouchers[index];
+            const row =
+                voucher !== null && typeof voucher === "object" && !Array.isArray(voucher)
+                    ? (voucher as Record<string, unknown>)
+                    : {};
+            const trackId = String(row.trackId ?? "").trim();
+            const raw: Record<string, unknown> = { ...rawCart };
+            if (amounts.length > 1) raw.voucherIndex = index;
+            return this.newMark({
+                content: result.link,
+                contentType,
+                amount,
+                externalId: result.shopOrderId,
+                trackingNumber: trackId || undefined,
+                providerRaw: Object.keys(raw).length ? raw : undefined,
+            });
+        });
+    }
+
+    /** @deprecated Use ProviderClient.track.get. Delegates to the unsupported stamp wire. */
     async trackStamp(trackingNumber: string): Promise<TrackingStatus> {
-        throw new PortoError(
-            "Tracking not available for INTERNETMARKE stamps",
-            PortoErrorCode.PORTO_TRACKING_UNSUPPORTED,
-            501,
-            {
-                provider_id: "deutschepost",
-                wire: "internetmarke",
-                tracking_kind: "stamp",
-                tracking_number: trackingNumber,
-            },
-            false,
-            "deutschepost",
-            "internetmarke",
-        );
+        const adapter = getTrackingAdapter("deutschepost", { wireId: "internetmarke" });
+        return adapter.track(trackingNumber);
     }
 
     async balance(execution?: ExecutionParameters): Promise<Balance> {

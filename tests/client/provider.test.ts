@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { LAPOSTE_STATUS_MAP } from "../../src/adapters/laposte/tracking/status-map.js";
+import { MAP as laposte } from "../../src/adapters/laposte/tracking/status-map.js";
 import { mapNativeStatus } from "../../src/adapters/tracking/acl.js";
 import { mapEvent } from "../../src/adapters/tracking/adapter.js";
 import { PortoClient } from "../../src/client.js";
@@ -59,7 +59,7 @@ describe("ProviderClient config", () => {
 describe("tracking ACL", () => {
     it("maps La Poste native codes", () => {
         expect(mapNativeStatus("laposte", "LIV")).toBe(TrackingState.DELIVERED);
-        expect(Object.keys(LAPOSTE_STATUS_MAP).length).toBeGreaterThanOrEqual(5);
+        expect(Object.keys(laposte).length).toBeGreaterThanOrEqual(5);
     });
 
     it("builds enriched tracking events with parity fields", () => {

@@ -73,7 +73,7 @@ describe("bdd reporter tokens", () => {
         expect(joined).toContain("[bdd]");
         expect(joined).toContain("group=cli");
         expect(joined).toContain("adapters-internetmarke-errors");
-        expect(joined).toContain("BDD batches (24)");
+        expect(joined).toContain("BDD batches (25)");
         expect(joined).toContain("adapters-internetmarke-marks-canary");
         expect(joined).toContain("adapters-internetmarke-marks-full");
         expect(joined).not.toMatch(/\u001b\[/);

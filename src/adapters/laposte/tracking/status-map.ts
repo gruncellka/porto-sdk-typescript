@@ -1,10 +1,10 @@
-import { TrackingState } from "../../../types/index.js";
+import { PortoStatus } from "../../../types/index.js";
 
-export const LAPOSTE_STATUS_MAP: Record<string, TrackingState> = {
-    PC1: TrackingState.CREATED,
-    PC2: TrackingState.IN_TRANSIT,
-    PC3: TrackingState.OUT_FOR_DELIVERY,
-    LIV: TrackingState.DELIVERED,
-    REN: TrackingState.RETURNED,
-    NDR: TrackingState.UNDELIVERABLE,
+export const MAP: Record<string, PortoStatus> = {
+    PC1: PortoStatus.CREATED,
+    PC2: PortoStatus.TRANSIT,
+    PC3: PortoStatus.DELIVERY,
+    LIV: PortoStatus.DELIVERED,
+    REN: PortoStatus.RETURNED,
+    NDR: PortoStatus.UNDELIVERABLE,
 };

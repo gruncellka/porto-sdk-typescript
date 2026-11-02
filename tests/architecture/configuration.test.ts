@@ -25,8 +25,9 @@ describe("PortoConfig contract", () => {
 
     it("keeps status map literals out of generic tracking", () => {
         const acl = readFileSync(join(SRC, "adapters", "tracking", "acl.ts"), "utf8");
+        expect(acl).not.toContain("PortoStatus.CREATED");
         expect(acl).not.toContain("TrackingState.CREATED");
-        expect(acl).toContain("LAPOSTE_STATUS_MAP");
+        expect(acl).toContain('from "../laposte/tracking/status-map.js"');
     });
 
     it("errors do not import adapters", () => {

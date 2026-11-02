@@ -1,12 +1,13 @@
 import {
-    getDefaultWireId,
     getExecutionAdapter,
-    resolveActiveWireFor,
     supportsBilling,
     supportsExecution,
 } from "./adapters/execution-registry.js";
-import { getTrackingAdapter } from "./adapters/tracking/adapter.js";
-import type { TrackingAdapter } from "./adapters/tracking/adapter.js";
+import {
+    type TrackingAdapter,
+    getTrackingAdapter,
+    trackingWireId,
+} from "./adapters/tracking/adapter.js";
 import type { PortoClient } from "./client.js";
 import { type ProviderRuntimeConfig, normalizeProviderId } from "./config.js";
 import type { PortoDataLoader } from "./data/loader.js";
@@ -74,10 +75,6 @@ export class ProviderClient {
         const validator = new DomainIds(args.dataLoader);
         const portoResolver = args.resolver;
 
-        const wireId =
-            resolveActiveWireFor(this.providerId, this.runtime.wires, this.dataPath) ??
-            getDefaultWireId(this.providerId, this.dataPath);
-
         const executionAdapter = getExecutionAdapter(
             this.providerId,
             this.runtime.wires,
@@ -99,9 +96,13 @@ export class ProviderClient {
                 new JurisdictionsService(args.dataLoader).countryCode3(code),
             );
         }
+        const trackWire = trackingWireId(this.runtime.wires);
+        const trackBase = trackWire ? this.runtime.wires?.[trackWire]?.baseUrl : undefined;
         this.trackingAdapter = getTrackingAdapter(this.providerId, {
-            wireId,
+            wireId: trackWire,
             dataPath: this.dataPath,
+            baseUrl: trackBase,
+            httpClient: args.root._sharedHttp(),
         });
 
         const validation = new LetterValidationService(portoResolver, validator, args.root.address);
