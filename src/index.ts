@@ -14,7 +14,14 @@ export type {
 } from "./config";
 export { CapabilityState } from "./states.js";
 export { PortoError, PortoErrorCode } from "./errors";
-export type { Address, Dimensions, TrackingStatus } from "./types/index";
+export type {
+    Address,
+    Dimensions,
+    OccurredKind,
+    TrackingEvent,
+    TrackingStatus,
+} from "./types/index";
+export { PortoStatus, TrackingState } from "./types/index";
 export type {
     ExecutionParameters,
     PortoMark,

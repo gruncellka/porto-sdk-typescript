@@ -96,6 +96,12 @@ export const BDD_BATCHES: readonly BddBatch[] = [
         featureGlob: "core/errors.feature",
     },
     {
+        id: "core-status",
+        label: "Core · PortoStatus catalog",
+        group: "core",
+        featureGlob: "core/status.feature",
+    },
+    {
         id: "core-mark",
         label: "Core · mark",
         group: "core",

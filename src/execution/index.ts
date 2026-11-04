@@ -46,6 +46,8 @@ export interface PortoMark {
     provider: string;
     wire: string;
     generatedAt: string;
+    /** Opaque sanitized provider payload. Shape is not a compatibility contract. */
+    providerRaw?: Record<string, unknown>;
 }
 
 export interface MarkExecution {
@@ -71,6 +73,7 @@ export type PortoMarkResultInput = {
     externalId?: string | null;
     trackingNumber?: string | null;
     generatedAt?: string;
+    providerRaw?: Record<string, unknown>;
 };
 
 /** Mint a PortoMark. Adapters must call createBoundMarkFactory(provider, wire).newMark. */
@@ -96,6 +99,7 @@ export function buildPortoMark(
         provider,
         wire,
         generatedAt: input.generatedAt ?? new Date().toISOString(),
+        ...(input.providerRaw ? { providerRaw: input.providerRaw } : {}),
     };
 }
 

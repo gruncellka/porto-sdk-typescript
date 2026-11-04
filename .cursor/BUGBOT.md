@@ -43,16 +43,24 @@ Execution wiring reads product/checkout codes from `execution.json` instead of `
 - Bug: `Browser entry imports Node-only surface`
 - Label: `architecture`
 
+### 6) Tracking time semantics are changed
+
+Tracking code infers a timezone, replaces missing carrier time with poll time, or parses zoneless local time through `Date`.
+
+- Bug: `Tracking time semantics are corrupted`
+- Body: `Preserve explicit offsets and zoneless local carrier times. Poll time must stay observation metadata.`
+- Labels: `correctness`, `compatibility`
+
 ## Non-blocking
 
-### 6) Mark geometry hardcoded
+### 7) Mark geometry hardcoded
 
 Mark fetch hardcodes mm/px instead of `marks.calibrations[]` from embedded porto-data.
 
 - Bug: `Mark geometry hardcoded instead of catalog calibrations`
 - Label: `maintainability`
 
-### 7) Untracked TODO/FIXME
+### 8) Untracked TODO/FIXME
 
 TODO/FIXME without issue reference (`#123`).
 

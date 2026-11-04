@@ -1,10 +1,10 @@
-import { TrackingState } from "../../../types/index.js";
+import { PortoStatus } from "../../../types/index.js";
 
-export const DEUTSCHEPOST_SHIPMENT_STATUS_MAP: Record<string, TrackingState> = {
-    "pre-transit": TrackingState.CREATED,
-    transit: TrackingState.IN_TRANSIT,
-    "out-for-delivery": TrackingState.OUT_FOR_DELIVERY,
-    delivered: TrackingState.DELIVERED,
-    return: TrackingState.RETURNED,
-    failure: TrackingState.UNDELIVERABLE,
+export const MAP: Record<string, PortoStatus> = {
+    "pre-transit": PortoStatus.CREATED,
+    transit: PortoStatus.TRANSIT,
+    "out-for-delivery": PortoStatus.DELIVERY,
+    delivered: PortoStatus.DELIVERED,
+    return: PortoStatus.RETURNED,
+    failure: PortoStatus.UNDELIVERABLE,
 };
