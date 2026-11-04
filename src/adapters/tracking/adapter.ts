@@ -4,7 +4,7 @@ import { Adapter as Shipment } from "../deutschepost/tracking/shipment.js";
 import { buildEventId, mapNativeStatus } from "./acl.js";
 import { normalizeOccurredAt } from "./time.js";
 
-export type TrackingKind = "letter" | "stamp";
+export type TrackingKind = "label" | "stamp";
 
 export interface TrackingAdapter {
     providerId: string;
@@ -53,7 +53,7 @@ export class StubTrackingAdapter implements TrackingAdapter {
     readonly trackingKind: TrackingKind;
     readonly supportsTracking = false;
 
-    constructor(providerId: string, trackingKind: TrackingKind = "letter") {
+    constructor(providerId: string, trackingKind: TrackingKind = "label") {
         this.providerId = providerId.trim().toLowerCase();
         this.trackingKind = trackingKind;
     }
@@ -168,7 +168,7 @@ export function getTrackingAdapter(
     if (!wire) {
         return new UnsupportedTrackingAdapter(provider, {
             wire: "none",
-            trackingKind: "letter",
+            trackingKind: "label",
             reason: "No tracking wire is configured.",
         });
     }
@@ -178,7 +178,7 @@ export function getTrackingAdapter(
             wire: "internetmarke",
             trackingKind: "stamp",
             reason:
-                "Internetmarke stamp marks do not support letter tracking. " +
+                "Internetmarke stamp marks do not support label tracking. " +
                 "Use a Sendungsverfolgung wire when available.",
         });
     }
@@ -188,12 +188,12 @@ export function getTrackingAdapter(
         if (!base || !options?.httpClient) {
             return new UnsupportedTrackingAdapter(provider, {
                 wire: SHIPMENT_WIRE_ID,
-                trackingKind: "letter",
-                reason: "Letter tracking requires an explicit base URL.",
+                trackingKind: "label",
+                reason: "Label tracking requires an explicit base URL.",
             });
         }
         return new Shipment(base, options.httpClient);
     }
 
-    return new StubTrackingAdapter(provider, "letter");
+    return new StubTrackingAdapter(provider, "label");
 }

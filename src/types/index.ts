@@ -63,7 +63,7 @@ export interface TrackingEvent {
 export interface TrackingStatus {
     trackingNumber: string;
     providerId: string;
-    trackingKind: "letter" | "stamp";
+    trackingKind: "label" | "stamp";
     status?: PortoStatus;
     lastUpdate?: string;
     statusChangedAt?: string;
