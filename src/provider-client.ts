@@ -5,6 +5,7 @@ import {
 } from "./adapters/execution-registry.js";
 import {
     type TrackingAdapter,
+    type TrackingKind,
     getTrackingAdapter,
     trackingWireId,
 } from "./adapters/tracking/adapter.js";
@@ -42,7 +43,7 @@ export interface ProviderCapabilities {
     mark: CapabilityState;
     wallet: CapabilityState;
     track: CapabilityState;
-    trackingKind: "letter" | "stamp";
+    trackingKind: TrackingKind;
 }
 
 export class ProviderClient {
