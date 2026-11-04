@@ -1,6 +1,6 @@
 {
     "name": "@gruncellka/porto-sdk",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "TypeScript SDK for multi-provider postage — products, pricing, restrictions, envelopes, marks, and tracking",
     "type": "module",
     "main": "./dist/index.js",
