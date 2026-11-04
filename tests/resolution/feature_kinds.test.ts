@@ -9,7 +9,7 @@ import { DomainIds } from "../../src/data/validator.js";
 import { PortoError, PortoErrorCode } from "../../src/errors.js";
 import { buildPortoMark } from "../../src/execution/index.js";
 import { PROOF_FEATURE_KINDS } from "../../src/kinds.js";
-import { featureKindsForServiceIds } from "../../src/services/feature-kinds.js";
+import { kindsForServices } from "../../src/services/feature-kinds.js";
 import { PortoExecution } from "../../src/services/porto-execution.js";
 import { PortoResolver } from "../../src/services/porto-resolver.js";
 import type { TrackingStatus } from "../../src/types/index.js";
@@ -79,9 +79,9 @@ describe("purchased feature kinds", () => {
             getService: () => ({ features: ["missing_feature"] }),
             getFeature: () => null,
         };
-        expect(() => featureKindsForServiceIds(loader, ["einschreiben"])).toThrow(PortoError);
+        expect(() => kindsForServices(loader, ["einschreiben"])).toThrow(PortoError);
         try {
-            featureKindsForServiceIds(loader, ["einschreiben"]);
+            kindsForServices(loader, ["einschreiben"]);
         } catch (error) {
             const err = error as PortoError;
             expect(err.code).toBe(PortoErrorCode.PORTO_DATA_INVALID);
@@ -97,9 +97,32 @@ describe("purchased feature kinds", () => {
             getService: () => ({ features: ["sendungsnummer"] }),
             getFeature: () => ({ kind: "tracking" as const }),
         };
-        expect(featureKindsForServiceIds(loader, ["einschreiben", "einschreiben_einwurf"])).toEqual(
-            ["tracking"],
-        );
+        expect(kindsForServices(loader, ["einschreiben", "einschreiben_einwurf"])).toEqual([
+            "tracking",
+        ]);
+    });
+
+    it("skips blanks and fails closed on an unknown service", () => {
+        const loader = {
+            getService: (serviceId: string) => {
+                if (serviceId === "plain") return { features: ["", "sendungsnummer"] };
+                if (serviceId === "empty") return {};
+                return null;
+            },
+            getFeature: (featureId: string) =>
+                featureId === "sendungsnummer" ? { kind: "tracking" as const } : null,
+        };
+        expect(kindsForServices(loader, undefined)).toEqual([]);
+        expect(
+            kindsForServices(loader, [null as unknown as string, "", "  ", "empty", "plain"]),
+        ).toEqual(["tracking"]);
+        expect(() => kindsForServices(loader, ["missing"])).toThrow(PortoError);
+        try {
+            kindsForServices(loader, ["missing"]);
+        } catch (error) {
+            const err = error as PortoError;
+            expect(err.details).toMatchObject({ service_id: "missing" });
+        }
     });
 
     it("keeps tracking out of the proof subset and off TrackingStatus", () => {

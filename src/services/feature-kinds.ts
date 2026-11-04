@@ -11,7 +11,7 @@ type FeatureKindSource = {
 };
 
 /** Catalog order. Duplicate kinds collapse. Missing feature id fails closed. */
-export function featureKindsForServiceIds(
+export function kindsForServices(
     loader: FeatureKindSource,
     serviceIds: readonly string[] | null | undefined,
 ): FeatureKind[] {
