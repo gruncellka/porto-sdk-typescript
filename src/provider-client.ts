@@ -42,7 +42,7 @@ export interface ProviderCapabilities {
     mark: CapabilityState;
     wallet: CapabilityState;
     track: CapabilityState;
-    trackingKind: "shipment" | "stamp";
+    trackingKind: "letter" | "stamp";
 }
 
 export class ProviderClient {

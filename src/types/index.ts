@@ -3,6 +3,10 @@
  * Runtime validation: schemas/ Zod models typed against these interfaces.
  */
 
+import { PortoStatus } from "./statuses.js";
+
+export { PortoStatus };
+
 export interface Dimensions {
     length: number;
     width: number;
@@ -37,15 +41,6 @@ export interface MarkRequest {
     wireCode?: number | string;
 }
 
-export enum PortoStatus {
-    CREATED = "created",
-    TRANSIT = "transit",
-    DELIVERY = "delivery",
-    DELIVERED = "delivered",
-    RETURNED = "returned",
-    UNDELIVERABLE = "undeliverable",
-}
-
 /** @deprecated Use PortoStatus. Remove in 0.3+. */
 export const TrackingState = PortoStatus;
 export type TrackingState = PortoStatus;
@@ -68,7 +63,7 @@ export interface TrackingEvent {
 export interface TrackingStatus {
     trackingNumber: string;
     providerId: string;
-    trackingKind: "shipment" | "stamp";
+    trackingKind: "letter" | "stamp";
     status?: PortoStatus;
     lastUpdate?: string;
     statusChangedAt?: string;

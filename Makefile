@@ -51,6 +51,7 @@ registry:
 
 sync-bindings: .
 	@node scripts/build/build_error_bindings.mjs
+	@node scripts/build/build_status_bindings.mjs
 
 bindings: .
 	@pnpm run check:bindings

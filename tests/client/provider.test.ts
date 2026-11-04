@@ -69,7 +69,7 @@ describe("ProviderClient config", () => {
             .provider("deutschepost")
             .capabilities();
         expect(withShipment.track).toBe("ready");
-        expect(withShipment.trackingKind).toBe("shipment");
+        expect(withShipment.trackingKind).toBe("letter");
     });
 });
 

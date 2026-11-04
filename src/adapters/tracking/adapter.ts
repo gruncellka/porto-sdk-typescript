@@ -4,7 +4,7 @@ import { Adapter as Shipment } from "../deutschepost/tracking/shipment.js";
 import { buildEventId, mapNativeStatus } from "./acl.js";
 import { normalizeOccurredAt } from "./time.js";
 
-export type TrackingKind = "shipment" | "stamp";
+export type TrackingKind = "letter" | "stamp";
 
 export interface TrackingAdapter {
     providerId: string;
@@ -53,7 +53,7 @@ export class StubTrackingAdapter implements TrackingAdapter {
     readonly trackingKind: TrackingKind;
     readonly supportsTracking = false;
 
-    constructor(providerId: string, trackingKind: TrackingKind = "shipment") {
+    constructor(providerId: string, trackingKind: TrackingKind = "letter") {
         this.providerId = providerId.trim().toLowerCase();
         this.trackingKind = trackingKind;
     }
@@ -141,6 +141,7 @@ export function assembleTracking(history: TrackingEvent[]): TrackingAssembly {
     };
 }
 
+/** Provider wire key (Deutsche Post Sendungsverfolgung). Not the public tracking kind. */
 export const SHIPMENT_WIRE_ID = "shipment";
 
 export function trackingWireId(
@@ -167,7 +168,7 @@ export function getTrackingAdapter(
     if (!wire) {
         return new UnsupportedTrackingAdapter(provider, {
             wire: "none",
-            trackingKind: "shipment",
+            trackingKind: "letter",
             reason: "No tracking wire is configured.",
         });
     }
@@ -177,7 +178,7 @@ export function getTrackingAdapter(
             wire: "internetmarke",
             trackingKind: "stamp",
             reason:
-                "Internetmarke stamp marks do not support shipment tracking. " +
+                "Internetmarke stamp marks do not support letter tracking. " +
                 "Use a Sendungsverfolgung wire when available.",
         });
     }
@@ -187,12 +188,12 @@ export function getTrackingAdapter(
         if (!base || !options?.httpClient) {
             return new UnsupportedTrackingAdapter(provider, {
                 wire: SHIPMENT_WIRE_ID,
-                trackingKind: "shipment",
-                reason: "Shipment tracking requires an explicit base URL.",
+                trackingKind: "letter",
+                reason: "Letter tracking requires an explicit base URL.",
             });
         }
         return new Shipment(base, options.httpClient);
     }
 
-    return new StubTrackingAdapter(provider, "shipment");
+    return new StubTrackingAdapter(provider, "letter");
 }
