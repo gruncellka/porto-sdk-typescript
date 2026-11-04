@@ -39,6 +39,14 @@ export type FeatureKind =
     | "delivery_proof"
     | "thickness";
 
+/** Proof kinds on a purchased service. `tracking` is not in this set. */
+export const PROOF_FEATURE_KINDS = [
+    "acceptance_proof",
+    "recipient_signature",
+    "return_receipt",
+    "delivery_proof",
+] as const satisfies readonly FeatureKind[];
+
 const SERVICE_KIND_SET = new Set<string>(SERVICE_KINDS);
 const FEATURE_KIND_SET = new Set<string>(FEATURE_KINDS);
 

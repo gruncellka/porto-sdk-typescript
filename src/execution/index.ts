@@ -3,6 +3,7 @@
  */
 
 import { raiseDataInvalid } from "../errors/domains/data.js";
+import type { FeatureKind } from "../kinds.js";
 import type { Porto } from "../services/porto-resolver.js";
 import type { Address, MarkRequest } from "../types/index.js";
 
@@ -48,6 +49,7 @@ export interface PortoMark {
     generatedAt: string;
     /** Opaque sanitized provider payload. Shape is not a compatibility contract. */
     providerRaw?: Record<string, unknown>;
+    featureKinds: FeatureKind[];
 }
 
 export interface MarkExecution {
@@ -99,6 +101,7 @@ export function buildPortoMark(
         provider,
         wire,
         generatedAt: input.generatedAt ?? new Date().toISOString(),
+        featureKinds: [],
         ...(input.providerRaw ? { providerRaw: input.providerRaw } : {}),
     };
 }

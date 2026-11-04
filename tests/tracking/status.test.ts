@@ -146,6 +146,11 @@ describe("provider raw", () => {
             [95, 110],
         );
         expect(tracked.map((mark) => mark.trackingNumber)).toEqual(["TRACK1", "TRACK2"]);
+        expect(
+            tracked.every(
+                (mark) => (mark as { featureKinds?: string[] }).featureKinds?.length === 0,
+            ),
+        ).toBe(true);
         expect(tracked[0]?.providerRaw?.voucherIndex).toBe(0);
         expect(JSON.stringify(tracked)).not.toContain('"status"');
     });

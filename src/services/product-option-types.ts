@@ -1,5 +1,5 @@
 import type { MarkType, TrackingMode } from "../execution/index.js";
-import type { ServiceKind } from "../kinds.js";
+import type { FeatureKind, ServiceKind } from "../kinds.js";
 import type { DeliveryHint } from "./resolution/index.js";
 
 export interface ProductIndemnityOption {
@@ -16,6 +16,7 @@ export interface ServiceOption {
     amount: number | null;
     currency: string;
     combinableWith?: string[] | null;
+    featureKinds: FeatureKind[];
 }
 
 export interface ProductOption {
