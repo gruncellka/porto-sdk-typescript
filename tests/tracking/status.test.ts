@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { InternetmarkeAdapter } from "../../src/adapters/deutschepost/internetmarke/adapter.js";
 import { Adapter as Shipment } from "../../src/adapters/deutschepost/tracking/shipment.js";
-import { MAP as deutschepost } from "../../src/adapters/deutschepost/tracking/status-map.js";
-import { MAP as laposte } from "../../src/adapters/laposte/tracking/status-map.js";
-import { MAP as swisspost } from "../../src/adapters/swisspost/tracking/status-map.js";
-import { mapNativeStatus } from "../../src/adapters/tracking/acl.js";
+import { STATUS_MAPS, mapNativeStatus } from "../../src/adapters/tracking/acl.js";
 import {
     StubTrackingAdapter,
     UnsupportedTrackingAdapter,
@@ -12,17 +9,9 @@ import {
     mapEvent,
     trackingWireId,
 } from "../../src/adapters/tracking/adapter.js";
-import { MAP as ukrposhta } from "../../src/adapters/ukrposhta/tracking/status-map.js";
 import { PortoError, PortoErrorCode } from "../../src/errors.js";
 import { sanitizeProviderPayload } from "../../src/provider-payload.js";
 import { PortoStatus } from "../../src/types/index.js";
-
-const MAPS: Record<string, Record<string, PortoStatus>> = {
-    deutschepost,
-    laposte,
-    swisspost,
-    ukrposhta,
-};
 
 const CHECKOUT = {
     shopOrderId: "order-1",
@@ -41,9 +30,9 @@ const CHECKOUT_TRACKED = {
 };
 
 describe("tracking ACL", () => {
-    it.each(Object.keys(MAPS))("%s map covers every PortoStatus", (provider) => {
+    it.each(Object.keys(STATUS_MAPS))("%s map covers every PortoStatus", (provider) => {
         const mapped = new Set(
-            Object.keys(MAPS[provider]).map((key) => mapNativeStatus(provider, key)),
+            Object.keys(STATUS_MAPS[provider] ?? {}).map((key) => mapNativeStatus(provider, key)),
         );
         expect(mapped).toEqual(new Set(Object.values(PortoStatus)));
     });

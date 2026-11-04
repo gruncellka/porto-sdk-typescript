@@ -6,15 +6,15 @@ import { MAP as laposte } from "../laposte/tracking/status-map.js";
 import { MAP as swisspost } from "../swisspost/tracking/status-map.js";
 import { MAP as ukrposhta } from "../ukrposhta/tracking/status-map.js";
 
+export const STATUS_MAPS: Record<string, Record<string, PortoStatus>> = {
+    deutschepost,
+    laposte,
+    swisspost,
+    ukrposhta,
+};
+
 export function mapNativeStatus(providerId: string, nativeCode: string): PortoStatus | undefined {
-    const provider = providerId.trim().toLowerCase();
-    const table =
-        {
-            laposte,
-            ukrposhta,
-            swisspost,
-            deutschepost,
-        }[provider] ?? {};
+    const table = STATUS_MAPS[providerId.trim().toLowerCase()] ?? {};
     return table[nativeCode] ?? table[nativeCode.toUpperCase()] ?? table[nativeCode.toLowerCase()];
 }
 
