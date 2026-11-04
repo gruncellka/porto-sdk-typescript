@@ -28,8 +28,8 @@ importers:
         specifier: ^10.9.0
         version: 10.9.0
       '@gruncellka/porto-features':
-        specifier: '>=0.5.0 <1.0.0'
-        version: 0.5.0
+        specifier: '>=0.6.0 <1.0.0'
+        version: 0.6.0
       '@types/node':
         specifier: ^20.19.37
         version: 20.19.37
@@ -483,8 +483,8 @@ packages:
     resolution: {integrity: sha512-Nqw1OPt/koF25Ltl9dSZze1Pb5ni/3YzoM7i0ya9FpekFFXx1tIh6uSQer0DipEo/MGUwdKK7xhrB/LWwsTxHg==}
     engines: {node: '>=20'}
 
-  '@gruncellka/porto-features@0.5.0':
-    resolution: {integrity: sha512-PYEWlwcYRypVkeUG2t4Dp5njnonjIBTbG+X9J18lj8g09yzVzpK6ubxTLBSJ292k3VQAcgBmBZT9FkZNXzgmVw==}
+  '@gruncellka/porto-features@0.6.0':
+    resolution: {integrity: sha512-KeEdim4394lM6GfUy4+HGLtU2LfK5ibfkQgF/kx0nB80pIFFL3PcNsLU73DeyKMXeIY331jDvU4RKwf1baVJDQ==}
     engines: {node: '>=20'}
 
   '@isaacs/cliui@8.0.2':
@@ -2044,7 +2044,7 @@ snapshots:
 
   '@gruncellka/porto-data@0.7.0': {}
 
-  '@gruncellka/porto-features@0.5.0': {}
+  '@gruncellka/porto-features@0.6.0': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:
