@@ -5,7 +5,6 @@ import {
 } from "./adapters/execution-registry.js";
 import {
     type TrackingAdapter,
-    type TrackingKind,
     getTrackingAdapter,
     trackingWireId,
 } from "./adapters/tracking/adapter.js";
@@ -43,7 +42,6 @@ export interface ProviderCapabilities {
     mark: CapabilityState;
     wallet: CapabilityState;
     track: CapabilityState;
-    trackingKind: TrackingKind;
 }
 
 export class ProviderClient {
@@ -200,7 +198,6 @@ export class ProviderClient {
             mark: capabilityState({ supported: canMark }),
             track: capabilityState({ supported: this.trackingAdapter.supportsTracking }),
             wallet: capabilityState({ supported: canWallet }),
-            trackingKind: this.trackingAdapter.trackingKind,
         };
     }
 

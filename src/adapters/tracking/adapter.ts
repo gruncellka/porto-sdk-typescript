@@ -4,29 +4,21 @@ import { Adapter as Shipment } from "../deutschepost/tracking/shipment.js";
 import { buildEventId, mapNativeStatus } from "./acl.js";
 import { normalizeOccurredAt } from "./time.js";
 
-export type TrackingKind = "label" | "stamp";
-
 export interface TrackingAdapter {
     providerId: string;
     supportsTracking: boolean;
-    trackingKind: TrackingKind;
     track(trackingNumber: string): Promise<TrackingStatus>;
 }
 
 export class UnsupportedTrackingAdapter implements TrackingAdapter {
     readonly providerId: string;
     readonly wire: string;
-    readonly trackingKind: TrackingKind;
     readonly supportsTracking = false;
     private readonly reason: string;
 
-    constructor(
-        providerId: string,
-        options?: { wire?: string; trackingKind?: TrackingKind; reason?: string },
-    ) {
+    constructor(providerId: string, options?: { wire?: string; reason?: string }) {
         this.providerId = providerId.trim().toLowerCase();
         this.wire = options?.wire ?? "none";
-        this.trackingKind = options?.trackingKind ?? "stamp";
         this.reason = options?.reason ?? "Tracking is not supported for this provider wire.";
     }
 
@@ -38,7 +30,6 @@ export class UnsupportedTrackingAdapter implements TrackingAdapter {
             {
                 provider_id: this.providerId,
                 wire: this.wire,
-                tracking_kind: this.trackingKind,
                 tracking_number: trackingNumber,
             },
             false,
@@ -50,12 +41,10 @@ export class UnsupportedTrackingAdapter implements TrackingAdapter {
 
 export class StubTrackingAdapter implements TrackingAdapter {
     readonly providerId: string;
-    readonly trackingKind: TrackingKind;
     readonly supportsTracking = false;
 
-    constructor(providerId: string, trackingKind: TrackingKind = "label") {
+    constructor(providerId: string) {
         this.providerId = providerId.trim().toLowerCase();
-        this.trackingKind = trackingKind;
     }
 
     async track(trackingNumber: string): Promise<TrackingStatus> {
@@ -65,7 +54,6 @@ export class StubTrackingAdapter implements TrackingAdapter {
             501,
             {
                 provider_id: this.providerId,
-                tracking_kind: this.trackingKind,
                 tracking_number: trackingNumber,
             },
             false,
@@ -141,7 +129,7 @@ export function assembleTracking(history: TrackingEvent[]): TrackingAssembly {
     };
 }
 
-/** Provider wire key (Deutsche Post Sendungsverfolgung). Not the public tracking kind. */
+/** Provider wire key (Deutsche Post Sendungsverfolgung). */
 export const SHIPMENT_WIRE_ID = "shipment";
 
 export function trackingWireId(
@@ -168,7 +156,6 @@ export function getTrackingAdapter(
     if (!wire) {
         return new UnsupportedTrackingAdapter(provider, {
             wire: "none",
-            trackingKind: "label",
             reason: "No tracking wire is configured.",
         });
     }
@@ -176,10 +163,9 @@ export function getTrackingAdapter(
     if (provider === "deutschepost" && wire === "internetmarke") {
         return new UnsupportedTrackingAdapter(provider, {
             wire: "internetmarke",
-            trackingKind: "stamp",
             reason:
-                "Internetmarke stamp marks do not support label tracking. " +
-                "Use a Sendungsverfolgung wire when available.",
+                "The internetmarke wire does not poll tracking events. " +
+                "Use the shipment wire when a base URL is set.",
         });
     }
 
@@ -188,12 +174,11 @@ export function getTrackingAdapter(
         if (!base || !options?.httpClient) {
             return new UnsupportedTrackingAdapter(provider, {
                 wire: SHIPMENT_WIRE_ID,
-                trackingKind: "label",
-                reason: "Label tracking requires an explicit base URL.",
+                reason: "Tracking requires an explicit shipment base URL.",
             });
         }
         return new Shipment(base, options.httpClient);
     }
 
-    return new StubTrackingAdapter(provider, "label");
+    return new StubTrackingAdapter(provider);
 }

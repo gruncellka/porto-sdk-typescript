@@ -11,7 +11,6 @@ import type { TrackingAdapter } from "../../tracking/adapter.js";
 
 export class Adapter implements TrackingAdapter {
     readonly providerId = "deutschepost";
-    readonly trackingKind = "label" as const;
     readonly supportsTracking = true;
     readonly wire = "shipment";
 
@@ -102,7 +101,6 @@ function snapshot(trackingNumber: string, payload: Record<string, unknown>): Tra
     return {
         trackingNumber,
         providerId: "deutschepost",
-        trackingKind: "label",
         status: assembled.status,
         lastUpdate: assembled.lastUpdate,
         statusChangedAt: assembled.statusChangedAt,

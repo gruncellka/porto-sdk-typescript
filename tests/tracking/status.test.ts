@@ -82,7 +82,7 @@ describe("tracking wires", () => {
     it("selects live Deutsche Post shipment only for an explicit base URL", () => {
         const stamp = getTrackingAdapter("deutschepost", { wireId: "internetmarke" });
         expect(stamp).toBeInstanceOf(UnsupportedTrackingAdapter);
-        expect(stamp.trackingKind).toBe("stamp");
+        expect((stamp as UnsupportedTrackingAdapter).wire).toBe("internetmarke");
         expect(getTrackingAdapter("deutschepost", { wireId: "" })).toBeInstanceOf(
             UnsupportedTrackingAdapter,
         );
