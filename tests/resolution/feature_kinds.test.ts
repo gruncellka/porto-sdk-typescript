@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { InternetmarkeAdapter } from "../../src/adapters/deutschepost/internetmarke/adapter.js";
+import type { CheckoutResult } from "../../src/adapters/deutschepost/internetmarke/checkout.js";
 import type { ExecutionAdapter } from "../../src/adapters/protocols/execution.js";
 import type { PostalResolutionContext } from "../../src/data/context.js";
 import { PortoDataLoader } from "../../src/data/loader.js";
@@ -144,6 +146,48 @@ describe("purchased feature kinds", () => {
             );
             expect(mark.trackingNumber).toBe("RR123");
             expect(mark.featureKinds).toEqual(porto.featureKinds);
+        }
+    });
+
+    it("keeps the Internetmarke track id and copies kinds from the Porto", async () => {
+        const checkout: CheckoutResult = {
+            shopOrderId: "order-9",
+            link: "https://example.test/mark.png",
+            headers: {},
+            url: "https://api-eu.dhl.com/post/de/shipping/im/v1/app/shoppingcart/png",
+            request: { total: 95 },
+            response: {
+                shopOrderId: "order-9",
+                link: "https://example.test/mark.png",
+                voucherList: [{ voucherId: "v-9", trackId: "A0031B2C3D" }],
+            },
+        };
+        const adapter = new InternetmarkeAdapter();
+        (
+            adapter as unknown as { checkoutFor: () => { png: () => Promise<CheckoutResult> } }
+        ).checkoutFor = () => ({ png: async () => checkout });
+        const loader = new PortoDataLoader(resolvePortoDataPathForTests(), {
+            provider: "deutschepost",
+            ...testLoaderOptions,
+        });
+        const execution = new PortoExecution(loader, adapter);
+        const request = { value: 95, wireCode: 1 };
+        for (const porto of [await resolve(), await resolve("einschreiben_rueckschein")]) {
+            const direct = await adapter.mark(request, porto.product);
+            expect(direct.trackingNumber).toBe("A0031B2C3D");
+            expect(direct.featureKinds).toEqual([]);
+            const copied = await execution.execute(
+                {
+                    porto,
+                    request,
+                    allowedMimeTypes: [],
+                    resolvedProduct: porto.product,
+                },
+                0,
+            );
+            expect(copied.trackingNumber).toBe("A0031B2C3D");
+            expect(copied.featureKinds).toEqual(porto.featureKinds);
+            expect(checkout.response.featureKinds).toBeUndefined();
         }
     });
 });
