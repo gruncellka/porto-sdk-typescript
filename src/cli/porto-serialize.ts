@@ -37,6 +37,7 @@ export const PORTO_JSON_KEYS = [
     "requires",
     "services",
     "serviceIds",
+    "featureKinds",
 ] as const;
 
 function serializeJurisdictionInstrument(row: JurisdictionInstrument): Record<string, unknown> {
@@ -187,6 +188,7 @@ export function serializePorto(porto: Porto): Record<string, unknown> {
         requires: [...porto.requires],
         services: [...porto.services],
         serviceIds: [...porto.serviceIds],
+        featureKinds: [...porto.featureKinds],
     };
 }
 

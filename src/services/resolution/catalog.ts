@@ -13,6 +13,7 @@ import type {
 } from "../../data/loader.js";
 import { raiseDataNotFound } from "../../errors/domains/data.js";
 import type { ServiceKind } from "../../kinds.js";
+import { featureKindsForServiceIds } from "../feature-kinds.js";
 import type { ServiceOption } from "../product-option-types.js";
 import { ServiceResolver } from "./service-resolver.js";
 
@@ -153,6 +154,7 @@ export class PortoCatalog {
                 amount: price ?? null,
                 currency,
                 combinableWith: row.combinable_with ?? null,
+                featureKinds: featureKindsForServiceIds(this.loader, [id]),
             });
         }
         return out;

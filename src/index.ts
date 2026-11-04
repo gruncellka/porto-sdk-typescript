@@ -66,4 +66,5 @@ export type {
     RoutingRestriction,
 } from "./services/restrictions/index.js";
 export type { ServiceKind, FeatureKind } from "./kinds.js";
+export { PROOF_FEATURE_KINDS } from "./kinds.js";
 export type { Requirement } from "./requires.js";

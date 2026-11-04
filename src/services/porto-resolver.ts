@@ -22,10 +22,11 @@ import {
     raiseTooHeavy,
 } from "../errors/domains/resolution.js";
 import type { MarkType, TrackingMode } from "../execution/index.js";
-import type { ServiceKind } from "../kinds.js";
+import type { FeatureKind, ServiceKind } from "../kinds.js";
 import { type Requirement, merge as mergeRequires, tokens as requireTokens } from "../requires.js";
 import { seconds } from "../time.js";
 import type { Dimensions } from "../types/index.js";
+import { featureKindsForServiceIds } from "./feature-kinds.js";
 import { resolveMarkProfileId } from "./mark-resolution.js";
 import type { ServiceOption } from "./product-option-types.js";
 import {
@@ -84,6 +85,7 @@ export interface Porto {
     requires: readonly Requirement[];
     services: readonly ServiceKind[];
     serviceIds: readonly string[];
+    featureKinds: FeatureKind[];
 }
 
 export class PortoResolver {
@@ -387,6 +389,7 @@ export class PortoResolver {
             requires: [...requires].sort(),
             services: selectedKinds,
             serviceIds: mappedServiceIds,
+            featureKinds: featureKindsForServiceIds(this.dataLoader, mappedServiceIds),
         };
 
         this.cache.set(cacheKey, porto);

@@ -46,6 +46,21 @@ Then(
     },
 );
 
+Then(
+    "product option {string} service {string} should have feature kinds {string}",
+    (productId: string, serviceId: string, kinds: string) => {
+        const row = optionById(productId);
+        expect(row).toBeDefined();
+        const service = row!.services.find((item) => item.id === serviceId);
+        expect(service).toBeDefined();
+        const expected = kinds
+            .split(",")
+            .map((part) => part.trim())
+            .filter(Boolean);
+        expect(service!.featureKinds).toEqual(expected);
+    },
+);
+
 When(
     "I resolve using product {string} and discovered service {string}",
     async (productId: string, serviceId: string) => {

@@ -280,7 +280,8 @@ export class PortoExecution {
             ...execution,
             outputMime,
         });
-        return mark;
+        const kinds = prepared.porto?.featureKinds ?? [];
+        return { ...mark, featureKinds: [...kinds] };
     }
 
     async bytes(

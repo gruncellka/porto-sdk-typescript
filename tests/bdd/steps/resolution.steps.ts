@@ -157,6 +157,14 @@ Then("the resolved Porto should include feature kind {string}", (featureKind: st
     expect(kinds.has(featureKind)).toBe(true);
 });
 
+Then("the resolved Porto feature kinds should be {string}", (kinds: string) => {
+    const expected = kinds
+        .split(",")
+        .map((part) => part.trim())
+        .filter(Boolean);
+    expect(context.porto?.featureKinds).toEqual(expected);
+});
+
 Then("the resolved amount should be greater than the product component amount", () => {
     const porto = context.porto!;
     const productAmount = (
